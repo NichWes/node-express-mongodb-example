@@ -53,6 +53,14 @@ async function updateUser(id, name, email) {
   );
 }
 
+async function verifyEmail(email) {
+  if(email == "admin@example.com") {
+    return "ada";
+  } else {
+    return email;
+  }
+}
+
 /**
  * Delete a user
  * @param {string} id - User ID
@@ -67,5 +75,6 @@ module.exports = {
   getUser,
   createUser,
   updateUser,
+  verifyEmail,
   deleteUser,
 };

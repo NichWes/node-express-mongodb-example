@@ -51,6 +51,14 @@ async function createUser(request, response, next) {
     const email = request.body.email;
     const password = request.body.password;
 
+    const cekEmail = await usersService.verifyEmail(request.body.email);
+    if(cekEmail == "ada") {
+      throw errorResponder (
+        errorTypes.EMAIL_ALREADY_TAKEN,
+        'The email already exists'
+      );
+    }
+
     const success = await usersService.createUser(name, email, password);
     if (!success) {
       throw errorResponder(
@@ -77,6 +85,14 @@ async function updateUser(request, response, next) {
     const id = request.params.id;
     const name = request.body.name;
     const email = request.body.email;
+
+    const cekEmail = await usersService.verifyEmail(request.body.email);
+    if(cekEmail == "ada") {
+      throw errorResponder (
+        errorTypes.EMAIL_ALREADY_TAKEN,
+        'The email already exists'
+      );
+    }
 
     const success = await usersService.updateUser(id, name, email);
     if (!success) {
