@@ -54,8 +54,8 @@ async function updateUser(id, name, email) {
 }
 
 async function verifyEmail(email) {
-  if(email == "admin@example.com") {
-    return "ada";
+  if (email == 'admin@example.com') {
+    return 'ada';
   } else {
     return email;
   }

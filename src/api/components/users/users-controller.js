@@ -50,10 +50,18 @@ async function createUser(request, response, next) {
     const name = request.body.name;
     const email = request.body.email;
     const password = request.body.password;
+    const password_confirm = request.body.password_confirm;
+
+    if (password_confirm != password) {
+      throw errorResponder(
+        errorTypes.INVALID_PASSWORD,
+        'pasword_confirm are required or Confirm password and password must be the same'
+      );
+    }
 
     const cekEmail = await usersService.verifyEmail(request.body.email);
-    if(cekEmail == "ada") {
-      throw errorResponder (
+    if (cekEmail == 'ada') {
+      throw errorResponder(
         errorTypes.EMAIL_ALREADY_TAKEN,
         'The email already exists'
       );
@@ -87,8 +95,8 @@ async function updateUser(request, response, next) {
     const email = request.body.email;
 
     const cekEmail = await usersService.verifyEmail(request.body.email);
-    if(cekEmail == "ada") {
-      throw errorResponder (
+    if (cekEmail == 'ada') {
+      throw errorResponder(
         errorTypes.EMAIL_ALREADY_TAKEN,
         'The email already exists'
       );
