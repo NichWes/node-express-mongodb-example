@@ -86,6 +86,30 @@ async function updateUser(id, name, email) {
 }
 
 /**
+ * Change password
+ * @param {string} id - User ID
+ * @param {string} password - Password
+ * @returns {boolean}
+ */
+
+async function changePassword(id, password) {
+  const user = await usersRepository.getUser(id);
+
+  // User not found
+  if (!user) {
+    return null;
+  }
+
+  try {
+    await usersRepository.changePassword(id, password);
+  } catch (err) {
+    return null;
+  }
+
+  return true;
+}
+
+/**
  * Delete user
  * @param {string} id - User ID
  * @returns {boolean}
@@ -117,5 +141,6 @@ module.exports = {
   createUser,
   updateUser,
   verifyEmail,
+  changePassword,
   deleteUser,
 };

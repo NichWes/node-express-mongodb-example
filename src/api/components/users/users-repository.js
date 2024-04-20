@@ -53,12 +53,32 @@ async function updateUser(id, name, email) {
   );
 }
 
+/**
+ * Verify Email 
+ * @param {string} email - Email
+ * @returns {string}
+ */
+
 async function verifyEmail(email) {
   if (email == 'admin@example.com') {
     return 'ada';
   } else {
     return email;
   }
+}
+
+// change password
+async function changePassword(id, password) {
+  return User.updateOne(
+    {
+      _id: id,
+    },
+    {
+      $set: {
+        password,
+      },
+    }
+  );
 }
 
 /**
@@ -76,5 +96,6 @@ module.exports = {
   createUser,
   updateUser,
   verifyEmail,
+  changePassword,
   deleteUser,
 };

@@ -1,5 +1,8 @@
 const usersService = require('./users-service');
+const usersRepository = require('./users-repository');
 const { errorResponder, errorTypes } = require('../../../core/errors');
+const { passwordMatched } = require('../../../utils/password');
+const { User } = require('../../../models');
 
 /**
  * Handle get list of users request
@@ -117,6 +120,53 @@ async function updateUser(request, response, next) {
 }
 
 /**
+ * Handle change password request
+ * @param {object} request - Express request object
+ * @param {object} response - Express response object
+ * @param {object} next - Express route middlewares
+ * @returns {object} Response object or pass an error to the next route
+ */
+
+async function changePassword(request, response, next) {
+  try {
+    const id = request.params.id;
+    const password_lama = request.body.password_lama
+    const password = request.body.password_baru;
+    const password_baru_confirm = request.body.password_baru_confirm;
+
+    const user = await usersRepository.getUser(id);
+    const userPassword = user ? user.password : '<RANDOM_PASSWORD_FILLER>';
+    const passwordChecked = await passwordMatched(password_lama, userPassword);
+
+    if (!passwordChecked) {
+      throw errorResponder(
+        errorTypes.INVALID_PASSWORD,
+        'the old password is wrong'
+      );
+    }
+
+    if (password_baru_confirm != password) {
+      throw errorResponder(
+        errorTypes.INVALID_PASSWORD,
+        'pasword_confirm are required or Confirm password and password must be the same'
+      );
+    }
+ 
+    const success = await usersService.changePassword(id, password);
+    if (!success) {
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Failed to change password'
+      );
+    }
+
+    return response.status(200).json({ id, password });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
  * Handle delete user request
  * @param {object} request - Express request object
  * @param {object} response - Express response object
@@ -146,5 +196,6 @@ module.exports = {
   getUser,
   createUser,
   updateUser,
+  changePassword,
   deleteUser,
 };
